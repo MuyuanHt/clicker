@@ -10,7 +10,7 @@ Clicker 由测试器 measurer 与点击器 worker 两部分构成，measurer 用
 
 **Clicker 的使用方式**
 
-1. 进入想要使用的目录并从 GitHub 获取源代码
+1. 进入某一文件目录并从 GitHub 获取源代码
 
 ```bash
 git clone https://github.com/MuyuanHt/clicker.git

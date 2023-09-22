@@ -1,0 +1,21 @@
+app :
+  AppTimeH : 6 # 程序累计运行时间 单位/h
+  AppTimeM : 0 # 程序累计运行时间 单位/min
+  AppTimeS : 0 # 程序累计运行时间 单位/s
+  SaveCoordFile : coord.json # 测试数据记录文件名称
+  IntervalTime : 7 # 每次执行间隔时间
+  MaxSize : 50 # 程序运行最大占用内存 单位/M
+  MaxOutTime : 10 # 最大超时时间
+
+test :
+  TestClickNum : 6 # 测定点击范围时鼠标点击次数
+  TestStartTime : 5 # 测定前准备时间 单位/s
+  TestIntervalTime : 2 # 每次测定间隔时间 单位/s
+
+window :
+  WindowMaxX : 1920 # 显示器最大宽度 x
+  WindowMaxY : 1080 # 显示器最大高度 y
+
+mouse :
+  MouseSpeed : 100.0  # 鼠标移动速度
+  MouseASpeed : 100.0 # 鼠标移动加速度

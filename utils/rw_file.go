@@ -5,52 +5,51 @@ import (
 	"clicker/models"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
 // WriteCoord 将测试数据写入文件
-func WriteCoord(c models.Coord) {
+func WriteCoord(cs []models.Coord) {
 	file, err := os.OpenFile(inits.Cfg.SaveCoordFile, os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
-		log.Fatal("Could not open, error: ", err)
+		inits.Logger.Fatal("Could not open, error: ", err)
 	}
 	defer CloseFile(file)
 	var data []byte
-	data, err = json.Marshal(c)
+	data, err = json.Marshal(cs)
 	if err != nil {
-		log.Println("Could not marshal, error: ", err)
+		inits.Logger.Println("Could not marshal, error: ", err)
 	}
 	err = ioutil.WriteFile(inits.Cfg.SaveCoordFile, data, 0644)
 	if err != nil {
-		log.Panicln("Write err", err)
+		inits.Logger.Panicln("Write err: ", err)
 	}
 }
 
-// ReadCoord 从文件中读取测试数据
-func ReadCoord() models.Coord {
-	coord := models.Coord{}
+// ReadCoord 从文件中读取测试数据 返回数据与切片长度
+func ReadCoord() ([]models.Coord, int) {
+	var coords []models.Coord
 	file, err := os.OpenFile(inits.Cfg.SaveCoordFile, os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
-		log.Fatal("Could not open, error: ", err)
+		inits.Logger.Fatal("Could not open, error: ", err)
 	}
 	defer CloseFile(file)
 	var data []byte
 	data, err = ioutil.ReadFile(inits.Cfg.SaveCoordFile)
 	if err != nil {
-		log.Panicln("Read err", err)
+		inits.Logger.Panicln("Read err: ", err)
 	}
-	err = json.Unmarshal(data, &coord)
+	err = json.Unmarshal(data, &coords)
 	if err != nil {
-		log.Println("Unmarshal err", err)
+		inits.Logger.Println("Unmarshal err: ", err)
 	}
-	return coord
+	return coords, len(coords)
 }
 
 // CloseFile 用于关闭文件
 func CloseFile(file *os.File) {
 	err := file.Close()
 	if err != nil {
-		log.Println("Could not close, error: ", err)
+		inits.Logger.Println("Could not close, error:", err)
 	}
 }

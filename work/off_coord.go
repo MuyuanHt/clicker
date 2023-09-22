@@ -4,63 +4,47 @@ import (
 	"clicker/inits"
 	"clicker/models"
 	"github.com/go-vgo/robotgo"
-	"log"
 	"math/rand"
 	"time"
 )
 
 var (
-	x, y   int  = 0, 0  // 当前坐标
-	dx, dy int  = 0, 0  // 最大最小坐标差值
-	ex, ey int  = 0, 0  // 随机生成目的坐标
-	is     bool = false // 判断是否为用户
+	dx, dy int = 0, 0 // 最大最小坐标差值
+	ex, ey int = 0, 0 // 随机生成目的坐标
 )
 
 // FirstLoc 初始化鼠标位置
-func FirstLoc(c models.Coord) (int, int) {
-	x = (c.MinX + c.MinX) / 2
-	y = (c.MaxY + c.MinY) / 2
-	robotgo.Move(x, y)
-	return x, y
+func FirstLoc(c models.Coord) {
+	robotgo.Move(c.Cx, c.Cy)
 }
-
-var stopCh = make(chan bool)
 
 // RadiusMouse 设置鼠标偏移量 鼠标位置变化
 func RadiusMouse(c models.Coord) {
-	x, y = robotgo.GetMousePos() // 获取当前鼠标位置坐标
-	dx = c.MaxX - c.MinX         // 计算差值生成随机位置
+	// 将当前鼠标移动到下一个坐标范围中心位置
+	robotgo.Move(c.Cx, c.Cy)
+	dx = c.MaxX - c.MinX // 计算差值生成随机位置
 	dy = c.MaxY - c.MinY
 	ex = rand.Intn(dx) + c.MinX //在差距范围内计算随机值+最小坐标得到范围内位置
 	ey = rand.Intn(dy) + c.MinY
-	go MoveMouse(c, ex, ey) // 在移动鼠标的同时判断是否为用户操作
-	select {
-	case is = <-stopCh:
-		if is == true {
-			useCh <- struct{}{}
-		}
-		return
-	case <-time.After(time.Second * time.Duration(inits.Cfg.MaxOutTime)):
-		log.Println("[超时] 将回到初始位置。")
-		FirstLoc(c) // 回到中心点
-	}
+	robotgo.MoveSmooth(ex, ey, inits.Cfg.MouseSpeed, inits.Cfg.MouseASpeed) // 设置鼠标移动速度与加速度
 }
 
-// MoveMouse 检测鼠标移动 同时判断是否为用户操作 ex ey 为目标位置
-func MoveMouse(c models.Coord, ex, ey int) {
-	x, y = robotgo.GetMousePos()
-	if IsUser(x, y, c) == true {
-		stopCh <- true
-	} else {
-		robotgo.MoveSmooth(ex, ey, inits.Cfg.MouseSpeed, inits.Cfg.MouseASpeed) // 设置鼠标移动速度与加速度
-		stopCh <- false
+// ChangeCoord 坐标变换 用于多个测定范围时使用
+// m 为切片长度 n 为当前所在坐标范围在切片中的下标
+func ChangeCoord(m, n int) int {
+	if n == m-1 {
+		return 0 // 当前位于切片末尾时回到切片前端
 	}
+	n++ // 移动到下一个区域
+	return n
 }
 
-// IsUser 判断是否用户在操作鼠标 假设越界就是用户在使用鼠标
-func IsUser(x, y int, c models.Coord) bool {
-	if x > c.MaxX || x < c.MinX || y > c.MaxY || y < c.MinY {
-		return true
+// OnceRunClick 每一轮的执行 包括坐标数量以内的点击与等待 num 表示每轮坐标变换次数 sub 表示下一个坐标
+func OnceRunClick(cs []models.Coord, num, sub int) {
+	for i := 0; i < num; i++ {
+		sub = ChangeCoord(len(cs), sub)                                                    // 坐标变换 返回下一个指向的坐标范围
+		RadiusMouse(cs[sub])                                                               // 控制坐标变换
+		AutoClick()                                                                        // 控制点击事件
+		time.Sleep(time.Millisecond * time.Duration(rand.Intn(inits.Cfg.ChangeCoordTime))) // 1000ms 以内
 	}
-	return false
 }

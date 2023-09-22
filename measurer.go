@@ -4,5 +4,5 @@ import "clicker/measure"
 
 func main() {
 	// 开始进行测试
-	measure.GetCoord()
+	measure.StartGet()
 }

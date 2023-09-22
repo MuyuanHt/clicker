@@ -3,7 +3,6 @@ package measure
 import (
 	"clicker/inits"
 	"clicker/models"
-	"clicker/utils"
 	"fmt"
 	"github.com/go-vgo/robotgo"
 	"time"
@@ -11,12 +10,11 @@ import (
 
 // GetCoord 获取初始化鼠标范围坐标
 // 该函数用于第一次运行时获取点击区域上下左右边界时使用
-func GetCoord() {
-	fmt.Println("准备开始测试 ")
+func GetCoord() models.Coord {
 	fmt.Printf("预期测试次数 %d 次\n", inits.Cfg.TestClickNum)
 	fmt.Printf("测试准备时间 %d 秒\n", inits.Cfg.TestStartTime)
-	fmt.Println("准备时间请将鼠标移动到需要点击的范围...")
-	fmt.Println("点击鼠标左键提前结束准备时间...")
+	fmt.Println("准备时间内请将鼠标移动到需要点击的范围")
+	fmt.Println("点击鼠标左键跳过准备时间并立即开始测定")
 	tm := time.Duration(inits.Cfg.TestStartTime) * time.Second
 	timer := time.NewTimer(tm)
 	// 点击鼠标左键立即开始测定
@@ -28,12 +26,12 @@ func GetCoord() {
 	}()
 	select {
 	case <-timer.C:
-		fmt.Println("准备时间结束，测试开始...")
+		fmt.Println("准备时间结束，测试开始")
 	case <-down:
 		if !timer.Stop() {
 			<-timer.C
 		}
-		fmt.Println("选择立即测试，测试开始...")
+		fmt.Println("选择立即测试，测试开始")
 	}
 	i := 0 // 计数器 当达到测试次数时退出循环
 	// 设定 max 为左上边界 min 为右下边界 刚好相反方便测试
@@ -64,7 +62,7 @@ func GetCoord() {
 		Cx:   (maxX + minX) / 2,
 		Cy:   (maxY + minY) / 2,
 	}
-	utils.WriteCoord(coord)
+	return coord
 }
 
 func maxNum(m, n int) int {

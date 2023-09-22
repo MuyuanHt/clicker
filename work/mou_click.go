@@ -8,8 +8,9 @@ import (
 )
 
 var (
-	clickNum int = 0 // 同一时刻点击次数
-	itm      int = 0 // 每次点击间隔时间
+	clickNum int = 0    // 同一时刻点击次数
+	itm      int = 0    // 每次点击间隔时间
+	x, y     int = 0, 0 // 鼠标当前位置
 )
 
 // AutoClick 控制鼠标点击事件

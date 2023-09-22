@@ -33,6 +33,7 @@ go build worker.go
 ## 注意事项
 
 1. 在运行时应当首先执行 measurer 文件再执行 worker 文件，否则可能会由于未测定点击区域而出现异常
+
 2. 可以在 configs 目录下对 config.yml 文件进行编辑以此对 Clicker 进行设置，以下是 config.yml 默认内容
 
 ```yml
@@ -60,8 +61,11 @@ mouse :
 ```
 
 3. 在程序运行时可以根据输出的提示内容进行操作，如跳过、暂停、退出等
+
 4. 请保证 configs 目录与 coord.json 文件、编译好的 measurer 文件、worker 文件位于同一目录下
+
 5. 默认暂停：用户鼠标超出测定范围
+
 6. 默认退出：用户主动点击鼠标右键
 
 ## 免责声明

@@ -6,6 +6,8 @@ Clicker 基于 RobotGo 实现，可以测定并记录显示器屏幕内的某一
 
 Clicker 由测试器 measurer 与点击器 worker 两部分构成，measurer 用于测定需要进行点击的范围，worker 用于在点击范围内进行随机点击。
 
+Clicker 支持多范围点击，可以测定多个需求坐标范围，并在各个坐标范围中进行轮换点击。
+
 ## 如何使用
 
 **Clicker 的使用方式**
@@ -38,40 +40,39 @@ go build worker.go
 
 ```yml
 app :
-  AppTimeH : 1 # 程序累计运行时间 单位/h
+  AppTimeH : 7 # 程序累计运行时间 单位/h
   AppTimeM : 0 # 程序累计运行时间 单位/min
   AppTimeS : 0 # 程序累计运行时间 单位/s
   SaveCoordFile : coord.json # 测试数据记录文件名称
-  IntervalTime : 7 # 每次点击最大间隔时间
   MaxSize : 30 # 程序运行最大占用内存 单位/M
   MaxOutTime : 10 # 最大超时时间
+  MaxCoordNum : 3 # 最大坐标范围数目
+  IntervalTime : 6 # 每次执行间隔时间 单位/s
+  ChangeCoordTime : 2000 # 多个坐标范围时每轮执行时坐标变换间隔时间 单位/ms
 
 test :
   TestClickNum : 6 # 测定点击范围时鼠标点击次数
   TestStartTime : 5 # 测定前准备时间 单位/s
   TestIntervalTime : 2 # 每次测定间隔时间 单位/s
+  TestBetweenTime : 5 # 多个坐标范围时各个范围测定间隔时间 单位/s
 
 window :
   WindowMaxX : 1920 # 显示器最大宽度 x
   WindowMaxY : 1080 # 显示器最大高度 y
 
 mouse :
-  MouseSpeed : 100.0  # 鼠标移动速度
-  MouseASpeed : 100.0 # 鼠标移动加速度
+  MouseSpeed : 10.0  # 鼠标移动速度
+  MouseASpeed : 30.0 # 鼠标移动加速度
 ```
 
 3. 在程序运行时可以根据输出的提示内容进行操作，如跳过、暂停、退出等
-
 4. 请保证 configs 目录与 coord.json 文件、编译好的 measurer 文件、worker 文件位于同一目录下
-
-5. 默认暂停：用户鼠标超出测定范围
-
-6. 默认退出：用户主动点击鼠标右键
+5. 用户点击鼠标右键时程序进入暂停状态
 
 ## 免责声明
 
 1. Clicker 核心功能基于 RobotGo 实现，详情查看 RobotGo 官方地址：https://github.com/go-vgo/robotgo
 
-2. Clicker 编写过程中，鉴于本人能力，代码存在很多不足，有许多值得修改的地方，还请原谅
+2. Clicker 编写过程中，鉴于本人能力有限，代码存在诸多不足，有很多值得修改的地方，还请原谅
 
 3. Clicker 仅供学习参考

@@ -71,6 +71,8 @@ mouse :
 
 5. 用户点击鼠标右键时程序进入暂停状态
 
+6. 编译好的 measurer 文件与 worker 文件需要使用管理员权限打开运行
+
 ## 免责声明
 
 1. Clicker 核心功能基于 RobotGo 实现，详情查看 RobotGo 官方地址：https://github.com/go-vgo/robotgo
